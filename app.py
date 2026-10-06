@@ -12,7 +12,6 @@ import streamlit as st
 # Constants
 # ----------------------------------------------------------------------------
 STANDARD_LOT_UNITS = 100_000   # base-currency units in 1.0 lot of a forex pair
-LINE = "-" * 50
 
 # Non-forex instruments: pip size, contract size per 1.0 lot, price decimals.
 # Pip value per lot = contract size x pip size (as Exness defines it).
@@ -158,29 +157,6 @@ def calculate(trade: Trade, conv_rate: float | None) -> dict:
     }
 
 
-def text_summary(trade: Trade, r: dict) -> str:
-    d = decimals_for(trade.key, trade.quote)
-    side = "LONG" if trade.is_long else "SHORT"
-    fill_label = "Ask" if trade.is_long else "Bid"
-    return "\n".join([
-        LINE,
-        f"TRADE SUMMARY: {trade.base}/{trade.quote} ({side})",
-        LINE,
-        f"• Account Balance:    ${trade.balance:,.2f}",
-        f"• Lot Size:           {trade.lots:g} Lots",
-        f"• Entry ({fill_label} fill):    {r['fill']:.{d}f}",
-        f"• Spread:             {r['spread_pips']:.1f} Pips (cost ${r['spread_cost']:,.2f})",
-        LINE,
-        f"• Stop Loss (SL):     {trade.sl:.{d}f} (-{r['sl_pips']:.1f} Pips)",
-        f"• Take Profit (TP):   {trade.tp:.{d}f} (+{r['tp_pips']:.1f} Pips)",
-        LINE,
-        f"• Total Risk ($):     -${r['risk_usd']:,.2f} ({r['risk_pct']:.2f}% of account)",
-        f"• Potential Profit:   +${r['reward_usd']:,.2f}",
-        f"• Risk-to-Reward:     1 : {r['rrr']:.2f}",
-        LINE,
-    ])
-
-
 # ----------------------------------------------------------------------------
 # UI
 # ----------------------------------------------------------------------------
@@ -278,9 +254,6 @@ if r["risk_pct"] > 2:
                "Many traders cap risk at 1-2% per trade.")
 if r["spread_pips"] > 0.25 * r["sl_pips"]:
     st.warning(f"The spread is {r['spread_pips'] / r['sl_pips'] * 100:.0f}% of your stop distance.")
-
-with st.expander("Text summary (copy-friendly)", expanded=True):
-    st.code(text_summary(trade, r), language=None)
 
 st.caption(
     "Estimates only. For non-USD-quoted pairs the real pip value moves with the exchange "
