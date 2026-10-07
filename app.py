@@ -160,7 +160,7 @@ def calculate(trade: Trade, conv_rate: float | None) -> dict:
 # ----------------------------------------------------------------------------
 # UI
 # ----------------------------------------------------------------------------
-st.set_page_config(page_title="Forex Trade Calculator", page_icon="📈", layout="centered")
+st.set_page_config(page_title="FX Calculator", page_icon="📈", layout="centered")
 st.title("📈 Forex Trade Calculator")
 st.caption(
     "Pips, dollar risk and reward, account risk % and risk-to-reward, using "
